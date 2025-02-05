@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            color: #f3f3f3;
+            margin-bottom: 30px;
+        }
+
+        form {
+            background-color: #1e1e1e;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        label {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        input[type="email"],
+        input[type="password"],
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="text"]:focus {
+            border-color: #f56a1a;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #ea4a00;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+        }
+
+        button:hover {
+            background-color: #11c930;
+        }
+
+        button:active {
+            background-color: #0cc033;
+        }
+
+        /* Styles pour les messages flash */
+        .flash-message {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;  /* Transition pour l'animation */
+        }
+
+        .flash-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .flash-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Connexion à votre compte e-mail</h1>
+        
+        <!-- Affichage des messages flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {% if category == 'error' %}flash-error{% else %}flash-success{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Formulaire de connexion modifié pour utiliser la méthode POST -->
+        <form method="POST" action="{{ url_for('fetch_emails') }}">
+            <label for="email">Adresse e-mail:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="password">Mot de passe:</label>
+            <input type="password" id="password" name="password" required>
+            
+            <label for="sender">Expéditeur (optionnel):</label>
+            <input type="text" id="sender" name="sender">
+            
+            <label for="subject">Objet (optionnel):</label>
+            <input type="text" id="subject" name="subject">
+            
+            <button type="submit">Se connecter</button>
+        </form>
+    </div>
+
+    <script>
+        // Si un message flash d'erreur est présent, le faire disparaître après 3 secondes
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach(flashMessage => {
+                // Disparition du message après 3 secondes
+                setTimeout(() => {
+                    flashMessage.style.opacity = 0;
+                    setTimeout(() => flashMessage.style.display = 'none', 500);  // Cache le message après la transition
+                }, 3000);  // 3000ms = 3 secondes
+            });
+        });
+    </script>
+</body>
+</html>
